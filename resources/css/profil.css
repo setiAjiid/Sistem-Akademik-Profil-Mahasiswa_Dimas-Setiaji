@@ -147,6 +147,12 @@ nav a.aktif {
     background: var(--emas);
 }
 
+/* Tombol ganti tema (Challenge 1), dibedakan dari tautan menu biasa. */
+nav a.tombol-mode {
+    border: 1px solid var(--garis);
+    margin-left: 4px;
+}
+
 /* Konten utama */
 main {
     max-width: var(--lebar);

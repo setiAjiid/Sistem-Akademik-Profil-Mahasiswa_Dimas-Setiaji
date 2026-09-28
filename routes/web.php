@@ -1,16 +1,42 @@
 <?php
 
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfilController;
 use Illuminate\Support\Facades\Route;
 
 // Semua rute diberi name() supaya tautan di Blade memakai route() dan tidak ada URL yang ditulis manual.
 
+/*
+|--------------------------------------------------------------------------
+| Tugas 4 (Pertemuan 4): tiga halaman utama, semuanya lewat PageController
+|--------------------------------------------------------------------------
+*/
+
+// Beranda. Challenge 2: /beranda?user=Andi menampilkan sapaan untuk nama tersebut.
+Route::get('/', [PageController::class, 'beranda'])
+    ->name('home');
+
+Route::get('/beranda', [PageController::class, 'beranda'])
+    ->name('beranda');
+
+Route::get('/profil-mahasiswa', [PageController::class, 'profil'])
+    ->name('profil');
+
+// Ide riset Agentic AI dan formulir pengumpulan ide. Challenge 1: ?mode=dark.
+Route::get('/ide-agent', [PageController::class, 'ideAgent'])
+    ->name('ide-agent');
+
+Route::post('/ide-agent', [PageController::class, 'kirimIde'])
+    ->name('ide-agent.kirim');
+
+/*
+|--------------------------------------------------------------------------
+| Tugas 2 (Pertemuan 2): rute routing dasar, tetap dipertahankan
+|--------------------------------------------------------------------------
+*/
+
 // Pola angka desimal positif (3, 3.5, 3.75) untuk kalkulator IPK.
 $angkaDesimal = '[0-9]+(\.[0-9]+)?';
-
-// Rute 1: Home
-Route::get('/', [ProfilController::class, 'home'])
-    ->name('home');
 
 // Rute 2: Detail profil, parameter {nrp} wajib.
 // Challenge 1: where() membatasi NRP ke 10 digit angka; yang tidak cocok langsung 404 tanpa masuk controller.

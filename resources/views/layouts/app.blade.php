@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+{{-- Challenge 1: $modeGelap dikirim View Composer (AppServiceProvider) dari parameter ?mode=dark. --}}
+<html lang="id" @class(['dark' => $modeGelap])>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,19 +9,26 @@
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#0b1120] text-slate-100">
+<body @class([
+    'min-h-screen transition-colors duration-300',
+    'bg-[#0b1120] text-slate-100' => $modeGelap,
+    'bg-slate-50 text-slate-900' => ! $modeGelap,
+])>
     <header>
         <div class="isi">
-            <a class="brand" href="{{ route('home') }}">
+            <a class="brand" href="{{ route('home', $kueriMode) }}">
                 <span class="logo">DS</span>
                 Dimas Setiaji
             </a>
             <nav>
-                {{-- request()->routeIs() mengecek nama rute yang sedang aktif --}}
-                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'aktif' : '' }}">Home</a>
-                <a href="{{ route('mahasiswa.show', ['nrp' => $nrpPemilik]) }}" class="{{ request()->routeIs('mahasiswa.*') ? 'aktif' : '' }}">Profil</a>
-                <a href="{{ route('agent.show', ['tema' => 'tokenpilot']) }}" class="{{ request()->routeIs('agent.*') ? 'aktif' : '' }}">Agentic AI</a>
-                <a href="{{ route('dashboard.index') }}" class="{{ request()->routeIs('dashboard.*') || request()->routeIs('ipk.*') ? 'aktif' : '' }}">Dashboard</a>
+                {{-- request()->routeIs() mengecek nama rute yang sedang aktif. $kueriMode menjaga ?mode=dark saat pindah halaman. --}}
+                <a href="{{ route('home', $kueriMode) }}" class="{{ request()->routeIs('home', 'beranda') ? 'aktif' : '' }}">Beranda</a>
+                <a href="{{ route('profil', $kueriMode) }}" class="{{ request()->routeIs('profil', 'mahasiswa.*') ? 'aktif' : '' }}">Profil</a>
+                <a href="{{ route('ide-agent', $kueriMode) }}" class="{{ request()->routeIs('ide-agent*', 'agent.*') ? 'aktif' : '' }}">Ide Agent</a>
+                <a href="{{ route('dashboard.index', $kueriMode) }}" class="{{ request()->routeIs('dashboard.*', 'ipk.*') ? 'aktif' : '' }}">Dashboard</a>
+                <a href="{{ $urlGantiMode }}" class="tombol-mode" title="Ganti tema">
+                    {{ $modeGelap ? 'Mode terang' : 'Mode gelap' }}
+                </a>
             </nav>
         </div>
     </header>
@@ -30,8 +38,8 @@
     </main>
 
     <footer>
-        <span>Tugas Mandiri PBKK Pertemuan 2</span>
-        <span>Dimas Setiaji (5025241056), Teknik Informatika ITS</span>
+        <span>Tugas Mandiri PBKK Pertemuan 4, Institut Teknologi Sepuluh Nopember</span>
+        <span>Dimas Setiaji (5025241056), Departemen Teknik Informatika ITS</span>
     </footer>
 </body>
 </html>

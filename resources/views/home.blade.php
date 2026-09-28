@@ -1,9 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Home')
+@section('title', 'Beranda')
 
 @section('content')
-    {{-- Rute 1: sambutan dan profil singkat --}}
+    {{-- Challenge 2: /beranda?user=Andi. $namaUser null kalau parameter user tidak ada. --}}
+    @if ($namaUser)
+        <x-status-banner tipe="success" :judul="'Selamat datang, ' . $namaUser . '!'" bisa-ditutup>
+            <p>Terima kasih sudah mampir ke profil akademik saya. Silakan lihat profil lengkap atau ide riset Agentic AI kelompok kami.</p>
+        </x-status-banner>
+    @endif
+
+    {{-- Sambutan dan profil singkat --}}
     <section class="hero">
         <div class="avatar foto">
             <img src="{{ asset($mahasiswa['foto']) }}" alt="Foto {{ $mahasiswa['nama'] }}">
@@ -22,8 +29,8 @@
                 @endforeach
             </div>
             <div class="tautan-tombol">
-                <a class="tombol" href="{{ route('mahasiswa.show', ['nrp' => $mahasiswa['nrp']]) }}">Lihat profil lengkap</a>
-                <a class="tombol sekunder" href="{{ route('dashboard.index') }}">Buka dashboard</a>
+                <a class="tombol" href="{{ route('profil', $kueriMode) }}">Lihat profil lengkap</a>
+                <a class="tombol sekunder" href="{{ route('ide-agent', $kueriMode) }}">Ide riset agent</a>
             </div>
         </div>
     </section>
@@ -44,8 +51,7 @@
     </div>
 
     <div class="dua-kolom">
-        <div class="kotak">
-            <h2>Tentang saya</h2>
+        <x-info-card judul="Tentang saya">
             <p>
                 Mahasiswa {{ $mahasiswa['departemen'] }} ITS angkatan {{ $mahasiswa['angkatan'] }}
                 asal {{ $mahasiswa['asal'] }}. {{ $mahasiswa['ringkasan'] }}
@@ -56,16 +62,18 @@
                     <li>{{ $peran['nama'] }}</li>
                 @endforeach
             </ul>
-        </div>
+        </x-info-card>
 
-        <div class="kotak">
-            <h2>Ide proyek akhir</h2>
+        <x-info-card judul="Ide proyek akhir" label="Agentic AI">
             <h3>TokenPilot</h3>
             <p>
                 Platform Agentic AI yang mengatur konteks agar AI coding bekerja lebih terarah
                 dan hemat token.
             </p>
-            <p><a href="{{ route('agent.show', ['tema' => 'tokenpilot']) }}">Baca penjelasan lengkap</a></p>
-        </div>
+
+            <x-slot:aksi>
+                <a href="{{ route('ide-agent', $kueriMode) }}">Lihat rancangan dan kirim ide &rarr;</a>
+            </x-slot:aksi>
+        </x-info-card>
     </div>
 @endsection

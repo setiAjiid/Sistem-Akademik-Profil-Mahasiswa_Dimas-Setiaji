@@ -15,6 +15,15 @@ class DataStatis
     /** Total SKS untuk lulus S1 Teknik Informatika ITS. */
     public const SKS_LULUS = 144;
 
+    /** Pilihan kategori di formulir pengumpulan ide (/ide-agent). Kunci dikirim form, nilai ditampilkan. */
+    public const KATEGORI_IDE = [
+        'keamanan' => 'Keamanan Sistem',
+        'produktivitas' => 'Produktivitas Developer',
+        'pendidikan' => 'Pendidikan',
+        'data' => 'Analisis Data',
+        'lainnya' => 'Lainnya',
+    ];
+
     /**
      * Daftar mahasiswa, diindeks berdasarkan NRP.
      *
@@ -193,6 +202,14 @@ class DataStatis
                 'masalah' => 'Saat memakai AI coding, konteks yang diberikan sering terlalu luas, berulang, '
                     .'atau justru kurang. Akibatnya AI harus membaca banyak file dan mencoba berkali-kali. '
                     .'TokenPilot mengatur konteks tersebut supaya pekerjaan lebih efisien.',
+                // Komponen utama untuk diagram rancangan di /ide-agent, urut sesuai aliran tugas.
+                'rancangan' => [
+                    ['aktor' => 'Pengguna', 'peran' => 'Memberi tugas, hasil yang diharapkan, dan batasan'],
+                    ['aktor' => 'Agent TokenPilot', 'peran' => 'Local LLM memilih konteks yang relevan dari project'],
+                    ['aktor' => 'AI Coding', 'peran' => 'Codex / Claude mengubah kode di ruang kerja terpisah'],
+                    ['aktor' => 'Test Runner', 'peran' => 'Menjalankan test; gagal berarti kembali ke agent (maks. 2x)'],
+                    ['aktor' => 'Laporan', 'peran' => 'Diff kode, hasil test, jejak agent, dan pemakaian token'],
+                ],
                 'alur' => [
                     'Pengguna memberikan tugas, hasil yang diharapkan, dan batasannya.',
                     'Program memeriksa project dan memberi tahu agent apakah ada catatan dari tugas sebelumnya.',

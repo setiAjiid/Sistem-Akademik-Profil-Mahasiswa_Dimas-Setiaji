@@ -7,19 +7,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
 
 /**
- * Menangani semua halaman profil akademik. Setiap method dipanggil dari routes/web.php.
+ * Halaman-halaman Tugas 2 (Pertemuan 2). Setiap method dipanggil dari routes/web.php.
+ * Rute 1 (/) sekarang ditangani PageController::beranda() untuk Tugas 4.
  */
 class ProfilController extends Controller
 {
-    /** Rute 1: / */
-    public function home(): View
-    {
-        return view('home', [
-            'mahasiswa' => DataStatis::cariMahasiswa(DataStatis::NRP_PEMILIK),
-            'ringkasan' => DataStatis::ringkasanStudi(),
-        ]);
-    }
-
     /**
      * Rute 2: /mahasiswa/{nrp}
      * Format 10 digit sudah dijaga where() di rute, di sini tinggal cek apakah NRP terdaftar.

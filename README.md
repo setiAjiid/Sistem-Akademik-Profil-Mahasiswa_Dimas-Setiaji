@@ -24,7 +24,7 @@ Buka <http://localhost:8000>.
 
 ## Daftar Rute
 
-Daftar lengkap bisa dilihat dengan `php artisan route:list --except-vendor`. CSS ada di `public/css/style.css` dan dimuat lewat `asset()`, tanpa Vite. Font diambil dari Google Fonts.
+Daftar lengkap bisa dilihat dengan `php artisan route:list --except-vendor`. CSS ada di `resources/css/` dan dimuat lewat Vite (`@vite`), font di-host lokal lewat `@fonts`.
 
 | Rute | Nama | Keterangan |
 |---|---|---|
@@ -52,7 +52,7 @@ routes/web.php                        # definisi rute, semua memakai name()
 app/Http/Controllers/ProfilController.php
 app/Data/DataStatis.php               # data diri, riwayat studi, tema agent (array statis)
 app/Providers/AppServiceProvider.php  # View::share() NRP pemilik untuk navbar
-public/css/style.css
+resources/css/app.css, profil.css    # Tailwind + CSS sendiri, diproses Vite
 resources/views/
     layouts/app.blade.php             # layout dan navbar, semua tautan lewat route()
     home.blade.php

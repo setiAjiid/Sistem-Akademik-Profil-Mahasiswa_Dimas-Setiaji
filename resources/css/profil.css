@@ -1,18 +1,46 @@
-/* Variabel warna dan ukuran. Ubah di sini, berlaku di semua halaman. */
+/*
+ * Variabel warna dan ukuran. Ubah di sini, berlaku di semua halaman.
+ * :root berisi tema terang (bawaan). Class .dark di <html> menimpanya dengan tema gelap.
+ * Warna latar <body> sendiri diatur class Tailwind di layouts/app.blade.php.
+ */
 :root {
+    --latar: #f5f7fb;
+    --panel: #ffffff;
+    --panel-tebal: #eef2f8;
+    --garis: rgba(15, 23, 42, 0.1);
+    --teks: #0f172a;
+    --teks-redup: #5b6477;
+    --emas: #f5b841;
+    --emas-gelap: #d99a1c;
+    --emas-teks: #a16207;
+    --emas-hover: #854d0e;
+    --biru: #3b6fe0;
+    --hijau: #047857;
+    --merah: #dc2626;
+    --header: rgba(255, 255, 255, 0.85);
+    --pesan-merah: #b91c1c;
+    --pesan-biru: #1d4ed8;
+    --sekunder-hover: #e2e8f0;
+    --lebar: 960px;
+    --radius: 14px;
+}
+
+.dark {
     --latar: #0b1120;
     --panel: #121a2e;
     --panel-tebal: #182339;
     --garis: rgba(255, 255, 255, 0.08);
     --teks: #e8edf6;
     --teks-redup: #8e9ab3;
-    --emas: #f5b841;
-    --emas-gelap: #d99a1c;
+    --emas-teks: #f5b841;
+    --emas-hover: #ffd27a;
     --biru: #5b8cff;
     --hijau: #3ddc97;
     --merah: #ff6b6b;
-    --lebar: 960px;
-    --radius: 14px;
+    --header: rgba(11, 17, 32, 0.8);
+    --pesan-merah: #ffb4b4;
+    --pesan-biru: #bcd0ff;
+    --sekunder-hover: #20304d;
 }
 
 * {
@@ -25,33 +53,32 @@ html {
 
 body {
     margin: 0;
-    font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+    font-family: var(--font-sans);
     font-size: 16px;
     line-height: 1.65;
-    color: var(--teks);
-    background:
+    /* Hanya gambar gradasi; warna latar dan teks datang dari class Tailwind di <body>. */
+    background-image:
         radial-gradient(900px 500px at 10% -10%, rgba(245, 184, 65, 0.14), transparent 60%),
-        radial-gradient(800px 500px at 100% 0%, rgba(91, 140, 255, 0.16), transparent 60%),
-        var(--latar);
+        radial-gradient(800px 500px at 100% 0%, rgba(91, 140, 255, 0.16), transparent 60%);
     background-attachment: fixed;
 }
 
 a {
-    color: var(--emas);
+    color: var(--emas-teks);
     text-decoration: none;
 }
 
 a:hover {
-    color: #ffd27a;
+    color: var(--emas-hover);
 }
 
 code {
-    font-family: "JetBrains Mono", Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.9em;
     padding: 2px 6px;
     border-radius: 6px;
     background: var(--panel-tebal);
-    color: var(--emas);
+    color: var(--emas-teks);
 }
 
 /* Header dan navigasi */
@@ -59,7 +86,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 10;
-    background: rgba(11, 17, 32, 0.8);
+    background: var(--header);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--garis);
 }
@@ -140,7 +167,7 @@ h2 {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--emas);
+    color: var(--emas-teks);
     margin: 0 0 16px;
 }
 
@@ -163,6 +190,15 @@ p {
 ol, ul {
     padding-left: 22px;
     margin: 0 0 14px;
+}
+
+/* Preflight Tailwind menghapus bullet dan nomor list, jadi dikembalikan di sini. */
+ul {
+    list-style: disc;
+}
+
+ol {
+    list-style: decimal;
 }
 
 li {
@@ -238,7 +274,7 @@ li {
     display: inline-block;
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--emas);
+    color: var(--emas-teks);
     margin-bottom: 10px;
 }
 
@@ -323,7 +359,7 @@ table.info th {
 }
 
 .mono {
-    font-family: "JetBrains Mono", Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 0.92em;
 }
 
@@ -364,7 +400,7 @@ table.info th {
     font-size: 2.2rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: var(--emas);
+    color: var(--emas-teks);
     line-height: 1.2;
 }
 
@@ -420,7 +456,7 @@ details summary::before {
     content: "+";
     display: inline-block;
     width: 20px;
-    color: var(--emas);
+    color: var(--emas-teks);
     font-weight: 800;
 }
 
@@ -449,7 +485,10 @@ form.baris label {
     color: var(--teks-redup);
 }
 
-input[type="number"] {
+input[type="number"],
+input[type="text"],
+select,
+textarea {
     width: 140px;
     padding: 10px 12px;
     font: inherit;
@@ -459,7 +498,10 @@ input[type="number"] {
     border-radius: 8px;
 }
 
-input[type="number"]:focus {
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
     outline: none;
     border-color: var(--emas);
 }
@@ -490,7 +532,7 @@ input[type="number"]:focus {
 }
 
 .tombol.sekunder:hover {
-    background: #20304d;
+    background: var(--sekunder-hover);
 }
 
 .tautan-tombol {
@@ -505,14 +547,14 @@ input[type="number"]:focus {
     border-radius: 10px;
     border: 1px solid rgba(255, 107, 107, 0.35);
     background: rgba(255, 107, 107, 0.1);
-    color: #ffb4b4;
+    color: var(--pesan-merah);
     margin-bottom: 24px;
 }
 
 .pesan.info {
     border-color: rgba(91, 140, 255, 0.35);
     background: rgba(91, 140, 255, 0.1);
-    color: #bcd0ff;
+    color: var(--pesan-biru);
 }
 
 .status {
@@ -522,7 +564,7 @@ input[type="number"]:focus {
     font-size: 0.78rem;
     font-weight: 700;
     color: var(--hijau);
-    background: rgba(61, 220, 151, 0.12);
+    background: color-mix(in srgb, var(--hijau) 14%, transparent);
 }
 
 /* Halaman 404 */

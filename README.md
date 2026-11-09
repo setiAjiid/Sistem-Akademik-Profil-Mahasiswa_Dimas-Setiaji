@@ -2,7 +2,8 @@
 
 Tugas Mandiri PBKK, dikerjakan bertahap di repo yang sama:
 
-- **Pertemuan 4 (terbaru):** Blade Templating & Integrasi Frontend Modern. Master layout, Blade components, Vite + Tailwind.
+- **Pertemuan 5 (terbaru):** Middleware, Autentikasi, dan Otorisasi. Login Breeze, role, middleware `cek.peran`, Gate, dan Policy. Tag [`tugas-5`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-5).
+- **Pertemuan 4:** Blade Templating & Integrasi Frontend Modern. Master layout, Blade components, Vite + Tailwind.
 - **Pertemuan 2:** Laravel Local Sandbox (routing dasar). Versi saat dikumpulkan ada di tag [`tugas-2`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-2).
 
 | | |
@@ -12,7 +13,7 @@ Tugas Mandiri PBKK, dikerjakan bertahap di repo yang sama:
 | Kelas / Kelompok | B / B1 |
 | Framework | Laravel 13, PHP 8.5, Vite 8, Tailwind CSS 4 |
 
-Mini-website akademik pribadi (tanpa database) berisi profil diri, rancangan platform Agentic AI kelompok (TokenPilot), dan formulir pengumpulan ide.
+Mini-website akademik pribadi berisi profil diri, rancangan platform Agentic AI kelompok (TokenPilot), dan formulir pengumpulan ide. Sejak Tugas 5 ada portal login untuk mahasiswa, dosen, dan asdos.
 
 ## Cara Menjalankan
 
@@ -21,7 +22,8 @@ composer install
 pnpm install            # atau npm install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate     # tabel sessions untuk SESSION_DRIVER=database
+touch database/database.sqlite   # file database SQLite (Windows: type nul > database\database.sqlite)
+php artisan migrate --seed       # buat tabel dan isi akun uji coba
 ```
 
 Lalu jalankan dua terminal:
@@ -32,6 +34,38 @@ php artisan serve       # terminal 2: server Laravel
 ```
 
 Buka <http://localhost:8000>. Tanpa `pnpm dev`, jalankan `pnpm build` sekali agar `public/build` terisi.
+
+## Akun Uji Coba
+
+Dibuat oleh `php artisan db:seed`. Semua memakai password `password`.
+
+| Role | Email |
+|---|---|
+| Dosen | `dosen@example.com` |
+| Asdos | `asdos@example.com` |
+| Mahasiswa | `mahasiswa@example.com` |
+
+Saat `APP_ENV=local`, halaman login punya tombol **Akun uji coba** untuk masuk tanpa mengetik password (`/login/as/dosen`, `/login/as/asdos`, `/login/as/mahasiswa`). Di environment lain rute itu menjawab 404.
+
+## Tugas 5: Middleware, Autentikasi, dan Otorisasi
+
+Tiga area halaman:
+
+| Area | URL | Siapa yang boleh |
+|---|---|---|
+| Publik | `/`, `/profil-mahasiswa`, `/ide-agent`, dan halaman lain | Semua orang |
+| Mahasiswa | `/proposal` (daftar, buat, ubah) | User login dengan role `mahasiswa` |
+| Dosen dan asdos | `/admin/proposal` (tinjau dan beri nilai) | User login dengan role `dosen` atau `asdos` |
+
+Pemenuhan spesifikasi:
+
+- **Breeze**: register, login, logout, dan edit profil berfungsi. Akun baru otomatis berrole `mahasiswa`. Setelah login, user masuk ke `/portal`.
+- **Kolom `role`**: migration `add_role_to_users_table` (string, default `mahasiswa`).
+- **Custom middleware**: `App\Http\Middleware\CekPeran`, alias `cek.peran` di `bootstrap/app.php`. Dipakai sebagai `cek.peran:dosen,asdos`. Tamu diarahkan ke login. User yang rolenya tidak cocok dikembalikan ke `/portal` dengan pesan error.
+- **Gate global**: `input-nilai` di `AppServiceProvider`, hanya lolos untuk dosen dan asdos.
+- **Policy**: `ProposalPolicy`. Hanya mahasiswa pembuat proposal yang boleh menyunting judul dan isinya, selain itu 403.
+- **Proteksi di Blade**: link dan form input nilai dibungkus `@can('input-nilai')`. Tombol "Ubah" proposal dibungkus `@can('update', $proposal)`. Pengecekan diulang di controller, jadi tidak bisa ditembus lewat request manual.
+- **Challenge**: `throttle:3,1` pada `POST /proposal` (maksimal 3 kali per menit), dan tombol login instan akun uji coba.
 
 ## Tugas 4: Blade Templating & Vite
 

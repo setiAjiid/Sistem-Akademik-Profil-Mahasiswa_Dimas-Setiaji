@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\ProposalController as AdminProposalController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\ProposalController;
 use Illuminate\Support\Facades\Route;
 
 // Semua rute diberi name() supaya tautan di Blade memakai route() dan tidak ada URL yang ditulis manual.
@@ -81,6 +83,28 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Area mahasiswa: mengisi rencana proyek kelompok AI. Hanya untuk user yang login dengan role mahasiswa.
+Route::middleware(['auth', 'cek.peran:mahasiswa'])
+    ->prefix('proposal')
+    ->name('proposal.')
+    ->group(function () {
+        Route::get('/', [ProposalController::class, 'index'])->name('index');
+        Route::get('/buat', [ProposalController::class, 'create'])->name('create');
+        Route::post('/', [ProposalController::class, 'store'])->name('store');
+        Route::get('/{proposal}/ubah', [ProposalController::class, 'edit'])->name('edit');
+        Route::put('/{proposal}', [ProposalController::class, 'update'])->name('update');
+    });
+
+// Area dosen dan asdos: meninjau proposal dan mengisi nilai. Dijaga middleware buatan sendiri cek.peran.
+Route::middleware(['auth', 'cek.peran:dosen,asdos'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/proposal', [AdminProposalController::class, 'index'])->name('proposal.index');
+        Route::get('/proposal/{proposal}', [AdminProposalController::class, 'show'])->name('proposal.show');
+        Route::put('/proposal/{proposal}/nilai', [AdminProposalController::class, 'nilai'])->name('proposal.nilai');
+    });
 
 // Rute login, register, logout, dan reset password dari Breeze.
 require __DIR__.'/auth.php';

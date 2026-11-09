@@ -14,7 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(DepartemenSeeder::class);
+        $this->call([
+            DepartemenSeeder::class,
+            DataAkademikSeeder::class,
+        ]);
 
         $dosen = User::factory()->dosen()->create([
             'name' => 'Dosen Uji Coba',

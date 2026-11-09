@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/forms';
 
 /* CSS buatan sendiri dimasukkan ke layer components supaya class utility Tailwind tetap bisa menimpanya. */
 @import './profil.css' layer(components);

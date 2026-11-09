@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -35,6 +36,12 @@ class User extends Authenticatable
         self::ROLE_DOSEN,
         self::ROLE_ASDOS,
     ];
+
+    /** Proposal yang dibuat user ini (khusus mahasiswa). */
+    public function proposals(): HasMany
+    {
+        return $this->hasMany(Proposal::class);
+    }
 
     /** Cek apakah user memiliki salah satu peran yang diberikan. */
     public function punyaPeran(string ...$peran): bool

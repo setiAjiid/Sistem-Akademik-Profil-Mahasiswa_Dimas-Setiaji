@@ -18,7 +18,7 @@ class Tugas7Test extends TestCase
 
     private function pengelola(): User
     {
-        return User::factory()->dosen()->create();
+        return User::factory()->dosen()->admin()->create();
     }
 
     /** @return array<string, mixed> */
@@ -40,7 +40,7 @@ class Tugas7Test extends TestCase
 
         $this->actingAs(User::factory()->create())
             ->get('/admin/mahasiswa')
-            ->assertRedirect(route('dashboard'));
+            ->assertForbidden();
 
         $this->actingAs($this->pengelola())->get('/admin/mahasiswa')->assertOk();
         $this->actingAs($this->pengelola())->get('/admin/dosen')->assertOk();

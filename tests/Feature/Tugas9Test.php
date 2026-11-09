@@ -37,7 +37,7 @@ class Tugas9Test extends TestCase
 
     private function pengelola(): User
     {
-        return User::factory()->asdos()->create();
+        return User::factory()->dosen()->admin()->create();
     }
 
     public function test_foto_diunggah_dan_path_disimpan(): void

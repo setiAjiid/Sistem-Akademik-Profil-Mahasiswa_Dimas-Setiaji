@@ -51,11 +51,15 @@ class Tugas8Test extends TestCase
         Mahasiswa::factory()->count(10)->create();
 
         DB::enableQueryLog();
-        $this->actingAs(User::factory()->dosen()->create())->get('/admin/mahasiswa')->assertOk();
-        $jumlahKueri = count(DB::getQueryLog());
+        $this->actingAs(User::factory()->dosen()->admin()->create())->get('/admin/mahasiswa')->assertOk();
 
-        // Tanpa eager loading jumlah query tumbuh sesuai jumlah baris (10 mahasiswa = 10 query departemen).
-        $this->assertLessThan(12, $jumlahKueri, "Terlalu banyak query: {$jumlahKueri}");
+        // Hitung query ke tabel departemens saja. Eager loading = 1 query untuk 10 baris,
+        // ditambah 1 query untuk isi dropdown filter. Tanpa eager loading jumlahnya 10 atau lebih.
+        $kueriDepartemen = collect(DB::getQueryLog())
+            ->filter(fn (array $kueri) => str_contains($kueri['query'], 'from "departemens"'))
+            ->count();
+
+        $this->assertLessThanOrEqual(2, $kueriDepartemen, "Query departemens: {$kueriDepartemen}");
     }
 
     public function test_ringkasan_departemen_menghitung_relasi(): void
@@ -64,7 +68,7 @@ class Tugas8Test extends TestCase
         Mahasiswa::factory()->count(3)->for($departemen)->create();
         Dosen::factory()->count(2)->for($departemen)->create();
 
-        $this->actingAs(User::factory()->asdos()->create())
+        $this->actingAs(User::factory()->asdos()->staf()->create())
             ->get('/admin/departemen')
             ->assertOk()
             ->assertViewHas('departemens', function ($daftar) {

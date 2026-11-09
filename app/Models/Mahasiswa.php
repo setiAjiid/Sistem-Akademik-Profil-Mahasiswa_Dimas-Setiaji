@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['nrp', 'nama', 'departemen_id', 'angkatan', 'ipk', 'is_active'])]
 class Mahasiswa extends Model
@@ -25,6 +26,11 @@ class Mahasiswa extends Model
             'ipk' => 'decimal:2',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function departemen(): BelongsTo
+    {
+        return $this->belongsTo(Departemen::class);
     }
 
     /** Hanya mahasiswa yang tidak sedang cuti akademik. */

@@ -24,16 +24,12 @@
                         <x-nav-link :href="route('admin.proposal.index')" :active="request()->routeIs('admin.*')">
                             Penilaian Proposal
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.departemen.index')" :active="request()->routeIs('admin.departemen.*')">
-                            Departemen
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.mahasiswa.index')" :active="request()->routeIs('admin.mahasiswa.*')">
-                            Data Mahasiswa
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.dosen.index')" :active="request()->routeIs('admin.dosen.*')">
-                            Data Dosen
-                        </x-nav-link>
                     @endcan
+                    @hasanyrole('admin|staf')
+                        <x-nav-link :href="route('admin.dashboard')">
+                            Dashboard Admin
+                        </x-nav-link>
+                    @endhasanyrole
                     <x-nav-link :href="route('home')">
                         Situs Publik
                     </x-nav-link>
@@ -101,16 +97,12 @@
                 <x-responsive-nav-link :href="route('admin.proposal.index')" :active="request()->routeIs('admin.*')">
                     Penilaian Proposal
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.departemen.index')" :active="request()->routeIs('admin.departemen.*')">
-                    Departemen
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.mahasiswa.index')" :active="request()->routeIs('admin.mahasiswa.*')">
-                    Data Mahasiswa
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.dosen.index')" :active="request()->routeIs('admin.dosen.*')">
-                    Data Dosen
-                </x-responsive-nav-link>
             @endcan
+            @hasanyrole('admin|staf')
+                <x-responsive-nav-link :href="route('admin.dashboard')">
+                    Dashboard Admin
+                </x-responsive-nav-link>
+            @endhasanyrole
             <x-responsive-nav-link :href="route('home')">
                 Situs Publik
             </x-responsive-nav-link>

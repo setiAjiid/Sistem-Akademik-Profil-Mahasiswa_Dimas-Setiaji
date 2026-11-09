@@ -7,14 +7,14 @@
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
+            <x-input-label for="email" value="Email" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" value="Kata sandi" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
@@ -28,20 +28,35 @@
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+                <span class="ms-2 text-sm text-gray-600">Ingat saya</span>
             </label>
         </div>
 
         <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                    Lupa kata sandi?
                 </a>
             @endif
 
             <x-primary-button class="ms-3">
-                {{ __('Log in') }}
+                Masuk
             </x-primary-button>
         </div>
     </form>
+
+    {{-- Tombol login instan untuk demo. Hanya tampil di environment local. --}}
+    @if (app()->environment('local'))
+        <div class="mt-6 border-t border-gray-200 pt-4">
+            <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">Akun uji coba</p>
+            <div class="mt-2 grid grid-cols-3 gap-2">
+                @foreach (['dosen' => 'Dosen', 'asdos' => 'Asdos', 'mahasiswa' => 'Mahasiswa'] as $role => $label)
+                    <a href="{{ route('login.uji-coba', $role) }}"
+                       class="rounded-md border border-gray-300 px-3 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        {{ $label }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
 </x-guest-layout>

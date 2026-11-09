@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ProposalController as AdminProposalController;
+use App\Http\Controllers\Auth\LoginUjiCobaController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilController;
@@ -91,7 +92,10 @@ Route::middleware(['auth', 'cek.peran:mahasiswa'])
     ->group(function () {
         Route::get('/', [ProposalController::class, 'index'])->name('index');
         Route::get('/buat', [ProposalController::class, 'create'])->name('create');
-        Route::post('/', [ProposalController::class, 'store'])->name('store');
+        // Challenge: maksimal 3 kali kirim proposal per menit untuk mencegah spam ke database.
+        Route::post('/', [ProposalController::class, 'store'])
+            ->middleware('throttle:3,1')
+            ->name('store');
         Route::get('/{proposal}/ubah', [ProposalController::class, 'edit'])->name('edit');
         Route::put('/{proposal}', [ProposalController::class, 'update'])->name('update');
     });
@@ -105,6 +109,10 @@ Route::middleware(['auth', 'cek.peran:dosen,asdos'])
         Route::get('/proposal/{proposal}', [AdminProposalController::class, 'show'])->name('proposal.show');
         Route::put('/proposal/{proposal}/nilai', [AdminProposalController::class, 'nilai'])->name('proposal.nilai');
     });
+
+// Challenge: login instan akun uji coba (/login/as/dosen, /login/as/asdos, /login/as/mahasiswa). Hanya jalan di local.
+Route::get('/login/as/{role}', LoginUjiCobaController::class)
+    ->name('login.uji-coba');
 
 // Rute login, register, logout, dan reset password dari Breeze.
 require __DIR__.'/auth.php';

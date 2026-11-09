@@ -8,9 +8,10 @@ use App\Models\Departemen;
 use App\Models\Mahasiswa;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 /**
- * CRUD data mahasiswa untuk dosen dan asdos.
+ * CRUD data mahasiswa untuk dosen dan asdos, termasuk upload foto.
  */
 class MahasiswaController extends Controller
 {
@@ -31,7 +32,7 @@ class MahasiswaController extends Controller
 
     public function store(SimpanMahasiswaRequest $request): RedirectResponse
     {
-        Mahasiswa::create($request->validated());
+        Mahasiswa::create($this->dataDenganFoto($request));
 
         return redirect()
             ->route('admin.mahasiswa.index')
@@ -48,7 +49,14 @@ class MahasiswaController extends Controller
 
     public function update(SimpanMahasiswaRequest $request, Mahasiswa $mahasiswa): RedirectResponse
     {
-        $mahasiswa->update($request->validated());
+        $data = $this->dataDenganFoto($request);
+
+        // Foto lama dihapus hanya kalau ada foto baru yang menggantikannya.
+        if (isset($data['foto']) && $mahasiswa->foto) {
+            Storage::disk('public')->delete($mahasiswa->foto);
+        }
+
+        $mahasiswa->update($data);
 
         return redirect()
             ->route('admin.mahasiswa.index')
@@ -57,10 +65,31 @@ class MahasiswaController extends Controller
 
     public function destroy(Mahasiswa $mahasiswa): RedirectResponse
     {
+        if ($mahasiswa->foto) {
+            Storage::disk('public')->delete($mahasiswa->foto);
+        }
+
         $mahasiswa->delete();
 
         return redirect()
             ->route('admin.mahasiswa.index')
             ->with('status', 'Data mahasiswa berhasil dihapus.');
+    }
+
+    /**
+     * Data hasil validasi. Kalau ada file foto, simpan ke storage/app/public/foto-mahasiswa
+     * lalu ganti isinya dengan path-nya. Kalau tidak ada, kolom foto tidak ikut diubah.
+     *
+     * @return array<string, mixed>
+     */
+    private function dataDenganFoto(SimpanMahasiswaRequest $request): array
+    {
+        $data = $request->safe()->except('foto');
+
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $request->file('foto')->store('foto-mahasiswa', 'public');
+        }
+
+        return $data;
     }
 }

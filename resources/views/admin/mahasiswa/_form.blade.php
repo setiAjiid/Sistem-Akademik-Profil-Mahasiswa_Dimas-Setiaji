@@ -44,6 +44,16 @@
         <x-input-error :messages="$errors->get('ipk')" class="mt-2" />
     </div>
 
+    <div class="sm:col-span-2">
+        <x-input-label for="foto" value="Foto (opsional, JPG atau PNG, maksimal 2 MB)" />
+        @if (isset($mahasiswa) && $mahasiswa->urlFoto())
+            <img src="{{ $mahasiswa->urlFoto() }}" alt="Foto {{ $mahasiswa->nama }}" class="mt-2 size-20 rounded-md object-cover">
+        @endif
+        <input id="foto" name="foto" type="file" accept="image/png,image/jpeg"
+            class="mt-2 block w-full text-sm text-gray-600 file:me-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:font-semibold file:text-gray-700 hover:file:bg-gray-200">
+        <x-input-error :messages="$errors->get('foto')" class="mt-2" />
+    </div>
+
     <div class="flex items-end">
         <label class="inline-flex items-center">
             <input type="checkbox" name="is_active" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"

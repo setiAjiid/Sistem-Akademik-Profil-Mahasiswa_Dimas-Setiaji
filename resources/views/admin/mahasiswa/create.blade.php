@@ -5,7 +5,7 @@
 
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <form method="POST" action="{{ route('admin.mahasiswa.store') }}" class="bg-white p-6 shadow-sm sm:rounded-lg">
+            <form method="POST" action="{{ route('admin.mahasiswa.store') }}" enctype="multipart/form-data" class="bg-white p-6 shadow-sm sm:rounded-lg">
                 @include('admin.mahasiswa._form')
 
                 <div class="mt-6 flex items-center gap-4">

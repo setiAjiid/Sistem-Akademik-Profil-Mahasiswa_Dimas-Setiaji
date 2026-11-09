@@ -29,6 +29,8 @@ class SimpanMahasiswaRequest extends FormRequest
             'angkatan' => ['required', 'integer', 'between:2000,'.now()->year],
             'ipk' => ['nullable', 'numeric', 'between:0,4'],
             'is_active' => ['boolean'],
+            // Foto opsional: hanya gambar JPG atau PNG, maksimal 2 MB.
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ];
     }
 
@@ -50,6 +52,9 @@ class SimpanMahasiswaRequest extends FormRequest
             'exists' => ':Attribute yang dipilih tidak valid.',
             'between' => ':Attribute harus antara :min sampai :max.',
             'max' => ':Attribute maksimal :max karakter.',
+            'foto.max' => 'Ukuran foto maksimal 2 MB.',
+            'foto.image' => 'Foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus berformat JPG atau PNG.',
             'numeric' => ':Attribute harus berupa angka.',
             'integer' => ':Attribute harus berupa angka bulat.',
         ];

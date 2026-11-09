@@ -32,7 +32,16 @@
                         @forelse ($mahasiswas as $mahasiswa)
                             <tr>
                                 <td class="px-6 py-3 font-mono">{{ $mahasiswa->nrp }}</td>
-                                <td class="px-6 py-3 font-medium text-gray-900">{{ $mahasiswa->nama }}</td>
+                                <td class="px-6 py-3 font-medium text-gray-900">
+                                    <div class="flex items-center gap-3">
+                                        @if ($mahasiswa->urlFoto())
+                                            <img src="{{ $mahasiswa->urlFoto() }}" alt="" class="size-8 rounded-full object-cover">
+                                        @else
+                                            <span class="grid size-8 place-items-center rounded-full bg-gray-100 text-xs font-bold text-gray-500">{{ mb_substr($mahasiswa->nama, 0, 1) }}</span>
+                                        @endif
+                                        {{ $mahasiswa->nama }}
+                                    </div>
+                                </td>
                                 <td class="px-6 py-3">{{ $mahasiswa->departemen->nama }}</td>
                                 <td class="px-6 py-3">{{ $mahasiswa->angkatan }}</td>
                                 <td class="px-6 py-3">{{ $mahasiswa->ipk ?? '-' }}</td>

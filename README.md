@@ -2,7 +2,8 @@
 
 Tugas Mandiri PBKK, dikerjakan bertahap di repo yang sama:
 
-- **Pertemuan 7 (terbaru):** CRUD Mahasiswa dan Dosen dengan validasi Form Request.
+- **Pertemuan 8 (terbaru):** Relasi Eloquent, eager loading, dan seeder Faker.
+- **Pertemuan 7:** CRUD Mahasiswa dan Dosen dengan validasi Form Request.
 - **Pertemuan 6:** Migrations dan Eloquent ORM. Skema departemen, dosen, mahasiswa, tugas.
 - **Pertemuan 5:** Middleware, Autentikasi, dan Otorisasi. Login Breeze, role, middleware `cek.peran`, Gate, dan Policy. Tag [`tugas-5`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-5).
 - **Pertemuan 4:** Blade Templating & Integrasi Frontend Modern. Master layout, Blade components, Vite + Tailwind.
@@ -48,6 +49,21 @@ Dibuat oleh `php artisan db:seed`. Semua memakai password `password`.
 | Mahasiswa | `mahasiswa@example.com` |
 
 Saat `APP_ENV=local`, halaman login punya tombol **Akun uji coba** untuk masuk tanpa mengetik password (`/login/as/dosen`, `/login/as/asdos`, `/login/as/mahasiswa`). Di environment lain rute itu menjawab 404.
+
+## Tugas 8: Relasi Eloquent dan Seeder
+
+Relasi antar model:
+
+| Model | Relasi |
+|---|---|
+| `Departemen` | `hasMany` mahasiswas, dosens, tugas |
+| `Dosen` | `belongsTo` departemen, `hasMany` tugas |
+| `Mahasiswa` | `belongsTo` departemen |
+| `Tugas` | `belongsTo` departemen dan dosen |
+
+- **Eager loading**: daftar mahasiswa dan dosen memakai `with('departemen')`, jadi nama departemen untuk 10 baris diambil dalam 1 query tambahan, bukan 10 (masalah N+1). Ada test yang menghitung jumlah query-nya.
+- **withCount**: halaman `/admin/departemen` menampilkan jumlah mahasiswa, dosen, dan tugas per departemen dengan `withCount(['mahasiswas', 'dosens', 'tugas'])`.
+- **Seeder Faker**: `php artisan db:seed` mengisi 6 departemen, 24 dosen (4 per departemen), 60 mahasiswa, 25 tugas, dan 3 akun uji coba. Tugas selalu diberikan dosen dari departemen yang sama.
 
 ## Tugas 7: CRUD Mahasiswa dan Dosen
 

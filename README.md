@@ -2,7 +2,8 @@
 
 Tugas Mandiri PBKK, dikerjakan bertahap di repo yang sama:
 
-- **Pertemuan 6 (terbaru):** Migrations dan Eloquent ORM. Skema departemen, dosen, mahasiswa, tugas.
+- **Pertemuan 7 (terbaru):** CRUD Mahasiswa dan Dosen dengan validasi Form Request.
+- **Pertemuan 6:** Migrations dan Eloquent ORM. Skema departemen, dosen, mahasiswa, tugas.
 - **Pertemuan 5:** Middleware, Autentikasi, dan Otorisasi. Login Breeze, role, middleware `cek.peran`, Gate, dan Policy. Tag [`tugas-5`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-5).
 - **Pertemuan 4:** Blade Templating & Integrasi Frontend Modern. Master layout, Blade components, Vite + Tailwind.
 - **Pertemuan 2:** Laravel Local Sandbox (routing dasar). Versi saat dikumpulkan ada di tag [`tugas-2`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-2).
@@ -47,6 +48,20 @@ Dibuat oleh `php artisan db:seed`. Semua memakai password `password`.
 | Mahasiswa | `mahasiswa@example.com` |
 
 Saat `APP_ENV=local`, halaman login punya tombol **Akun uji coba** untuk masuk tanpa mengetik password (`/login/as/dosen`, `/login/as/asdos`, `/login/as/mahasiswa`). Di environment lain rute itu menjawab 404.
+
+## Tugas 7: CRUD Mahasiswa dan Dosen
+
+Halaman kelola data di area pengelola (login sebagai dosen atau asdos):
+
+| URL | Fungsi |
+|---|---|
+| `/admin/mahasiswa` | Daftar (10 per halaman), tambah, ubah, hapus mahasiswa |
+| `/admin/dosen` | Daftar (10 per halaman), tambah, ubah, hapus dosen |
+
+- Rute dibuat dengan `Route::resource(...)->except('show')`, di dalam grup `/admin` yang dijaga `cek.peran:dosen,asdos`.
+- Validasi ada di Form Request (`SimpanMahasiswaRequest`, `SimpanDosenRequest`) dengan pesan Bahasa Indonesia. NRP harus 10 digit dan NIP 18 digit. Keduanya unik, dan aturan `unique` mengabaikan data yang sedang diubah.
+- Form tambah dan ubah memakai satu partial `_form.blade.php`. Setelah simpan, user diarahkan kembali ke daftar dengan pesan sukses.
+- Departemen diisi oleh `DepartemenSeeder` (6 departemen FTEIC).
 
 ## Tugas 6: Migrations dan Eloquent
 

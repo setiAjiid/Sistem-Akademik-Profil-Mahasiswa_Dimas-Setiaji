@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\ProposalFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['user_id', 'judul', 'deskripsi', 'nilai', 'catatan', 'dinilai_oleh'])]
 class Proposal extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProposalFactory> */
+    /** @use HasFactory<ProposalFactory> */
     use HasFactory;
 
     /** Mahasiswa yang membuat proposal. */

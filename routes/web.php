@@ -3,8 +3,8 @@
 use App\Http\Controllers\Admin\ProposalController as AdminProposalController;
 use App\Http\Controllers\Auth\LoginUjiCobaController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProposalController;
 use Illuminate\Support\Facades\Route;
 

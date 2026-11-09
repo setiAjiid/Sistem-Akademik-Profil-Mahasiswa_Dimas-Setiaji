@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CekPeran;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,7 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Alias middleware buatan sendiri, dipakai di rute sebagai 'cek.peran:dosen,asdos'.
+        $middleware->alias([
+            'cek.peran' => CekPeran::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

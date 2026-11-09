@@ -8,16 +8,50 @@ use App\Models\Departemen;
 use App\Models\Dosen;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
 /**
- * CRUD data dosen untuk dosen dan asdos.
+ * CRUD data dosen di panel admin, dengan pencarian dan filter departemen.
  */
-class DosenController extends Controller
+class DosenController extends Controller implements HasMiddleware
 {
-    public function index(): View
+    /**
+     * @return array<int, Middleware>
+     */
+    public static function middleware(): array
     {
+        return [
+            new Middleware('permission:lihat-dosen', only: ['index']),
+            new Middleware('permission:tambah-dosen', only: ['create', 'store']),
+            new Middleware('permission:edit-dosen', only: ['edit', 'update']),
+            new Middleware('permission:hapus-dosen', only: ['destroy']),
+        ];
+    }
+
+    /** Daftar dosen. Filter opsional: ?search= (nama atau NIP) dan ?departemen_id=. */
+    public function index(Request $request): View
+    {
+        // ?search[]=x menghasilkan array, bukan string, jadi dianggap kosong.
+        $search = is_string($request->query('search')) ? trim($request->query('search')) : '';
+
+        $dosens = Dosen::with('departemen')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%")
+                        ->orWhere('nip', 'like', "{$search}%");
+                });
+            })
+            ->when($request->integer('departemen_id'), fn ($query, $id) => $query->where('departemen_id', $id))
+            ->orderBy('nama')
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.dosen.index', [
-            'dosens' => Dosen::with('departemen')->orderBy('nama')->paginate(10),
+            'dosens' => $dosens,
+            'departemens' => Departemen::orderBy('nama')->get(),
+            'search' => $search,
         ]);
     }
 

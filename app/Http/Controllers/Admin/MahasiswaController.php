@@ -8,18 +8,61 @@ use App\Models\Departemen;
 use App\Models\Mahasiswa;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * CRUD data mahasiswa untuk dosen dan asdos, termasuk upload foto.
+ * CRUD data mahasiswa di panel admin, termasuk pencarian, filter, dan upload foto.
  */
-class MahasiswaController extends Controller
+class MahasiswaController extends Controller implements HasMiddleware
 {
-    public function index(): View
+    /**
+     * Setiap aksi dikunci permission Spatie di sisi server. Menyembunyikan tombol di Blade
+     * saja tidak cukup, karena request bisa dikirim manual lewat Postman.
+     *
+     * @return array<int, Middleware>
+     */
+    public static function middleware(): array
     {
+        return [
+            new Middleware('permission:lihat-mahasiswa', only: ['index']),
+            new Middleware('permission:tambah-mahasiswa', only: ['create', 'store']),
+            new Middleware('permission:edit-mahasiswa', only: ['edit', 'update']),
+            new Middleware('permission:hapus-mahasiswa', only: ['destroy']),
+        ];
+    }
+
+    /**
+     * Daftar mahasiswa. Filter opsional: ?search= (nama atau NRP), ?departemen_id=, ?status=aktif|cuti.
+     * when() hanya menambah klausa kalau nilainya diisi, jadi tidak perlu blok if bertingkat.
+     */
+    public function index(Request $request): View
+    {
+        // ?search[]=x menghasilkan array, bukan string, jadi dianggap kosong.
+        $search = is_string($request->query('search')) ? trim($request->query('search')) : '';
+        $status = $request->query('status');
+
+        $mahasiswas = Mahasiswa::with('departemen')
+            ->when($search !== '', function ($query) use ($search) {
+                // Dikelompokkan dalam closure supaya OR tidak merusak filter lain.
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%")
+                        ->orWhere('nrp', 'like', "{$search}%");
+                });
+            })
+            ->when($request->integer('departemen_id'), fn ($query, $id) => $query->where('departemen_id', $id))
+            ->when(in_array($status, ['aktif', 'cuti'], true), fn ($query) => $query->where('is_active', $status === 'aktif'))
+            ->orderBy('nama')
+            ->paginate(10)
+            // Parameter filter ikut terbawa di link halaman berikutnya.
+            ->withQueryString();
+
         return view('admin.mahasiswa.index', [
-            // with('departemen') memuat semua departemen dalam 1 query tambahan (mencegah N+1).
-            'mahasiswas' => Mahasiswa::with('departemen')->orderBy('nama')->paginate(10),
+            'mahasiswas' => $mahasiswas,
+            'departemens' => Departemen::orderBy('nama')->get(),
+            'search' => $search,
         ]);
     }
 

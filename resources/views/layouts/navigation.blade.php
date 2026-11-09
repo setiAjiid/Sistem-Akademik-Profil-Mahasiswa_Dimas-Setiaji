@@ -24,6 +24,12 @@
                         <x-nav-link :href="route('admin.proposal.index')" :active="request()->routeIs('admin.*')">
                             Penilaian Proposal
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.mahasiswa.index')" :active="request()->routeIs('admin.mahasiswa.*')">
+                            Data Mahasiswa
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.dosen.index')" :active="request()->routeIs('admin.dosen.*')">
+                            Data Dosen
+                        </x-nav-link>
                     @endcan
                     <x-nav-link :href="route('home')">
                         Situs Publik
@@ -91,6 +97,12 @@
             @can('input-nilai')
                 <x-responsive-nav-link :href="route('admin.proposal.index')" :active="request()->routeIs('admin.*')">
                     Penilaian Proposal
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.mahasiswa.index')" :active="request()->routeIs('admin.mahasiswa.*')">
+                    Data Mahasiswa
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.dosen.index')" :active="request()->routeIs('admin.dosen.*')">
+                    Data Dosen
                 </x-responsive-nav-link>
             @endcan
             <x-responsive-nav-link :href="route('home')">

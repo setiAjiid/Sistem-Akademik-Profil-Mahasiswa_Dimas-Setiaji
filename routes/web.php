@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\DosenController;
+use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\ProposalController as AdminProposalController;
 use App\Http\Controllers\Auth\LoginUjiCobaController;
 use App\Http\Controllers\PageController;
@@ -108,6 +110,10 @@ Route::middleware(['auth', 'cek.peran:dosen,asdos'])
         Route::get('/proposal', [AdminProposalController::class, 'index'])->name('proposal.index');
         Route::get('/proposal/{proposal}', [AdminProposalController::class, 'show'])->name('proposal.show');
         Route::put('/proposal/{proposal}/nilai', [AdminProposalController::class, 'nilai'])->name('proposal.nilai');
+
+        // Tugas 7: CRUD data master. Route::resource membuat index, create, store, edit, update, dan destroy sekaligus.
+        Route::resource('mahasiswa', MahasiswaController::class)->except('show');
+        Route::resource('dosen', DosenController::class)->except('show');
     });
 
 // Challenge: login instan akun uji coba (/login/as/dosen, /login/as/asdos, /login/as/mahasiswa). Hanya jalan di local.

@@ -2,7 +2,8 @@
 
 Tugas Mandiri PBKK, dikerjakan bertahap di repo yang sama:
 
-- **Pertemuan 5 (terbaru):** Middleware, Autentikasi, dan Otorisasi. Login Breeze, role, middleware `cek.peran`, Gate, dan Policy. Tag [`tugas-5`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-5).
+- **Pertemuan 6 (terbaru):** Migrations dan Eloquent ORM. Skema departemen, dosen, mahasiswa, tugas.
+- **Pertemuan 5:** Middleware, Autentikasi, dan Otorisasi. Login Breeze, role, middleware `cek.peran`, Gate, dan Policy. Tag [`tugas-5`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-5).
 - **Pertemuan 4:** Blade Templating & Integrasi Frontend Modern. Master layout, Blade components, Vite + Tailwind.
 - **Pertemuan 2:** Laravel Local Sandbox (routing dasar). Versi saat dikumpulkan ada di tag [`tugas-2`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-2).
 
@@ -46,6 +47,21 @@ Dibuat oleh `php artisan db:seed`. Semua memakai password `password`.
 | Mahasiswa | `mahasiswa@example.com` |
 
 Saat `APP_ENV=local`, halaman login punya tombol **Akun uji coba** untuk masuk tanpa mengetik password (`/login/as/dosen`, `/login/as/asdos`, `/login/as/mahasiswa`). Di environment lain rute itu menjawab 404.
+
+## Tugas 6: Migrations dan Eloquent
+
+Skema database akademik. Semua tabel dibuat lewat migration (`database/migrations/`), dan tiap tabel punya model serta factory.
+
+| Tabel | Model | Kolom utama |
+|---|---|---|
+| `departemens` | `Departemen` | `kode` (unik), `nama` (unik) |
+| `dosens` | `Dosen` | `nip` (unik), `nama`, `email`, `departemen_id` |
+| `mahasiswas` | `Mahasiswa` | `nrp` (unik), `nama`, `departemen_id`, `angkatan`, `ipk`, `is_active` |
+| `tugas` | `Tugas` | `judul`, `deskripsi`, `departemen_id`, `dosen_id`, `tenggat` |
+
+- Kolom yang sering dicari (`nama`, `judul`) diberi indeks, dan `nrp`/`nip` unik.
+- Foreign key memakai `constrained()`. Menghapus departemen ikut menghapus mahasiswa, dosen, dan tugasnya (`cascadeOnDelete`). Menghapus dosen hanya mengosongkan `dosen_id` pada tugas (`nullOnDelete`).
+- Model memakai `#[Fillable]`, `casts()` (`ipk` desimal, `is_active` boolean, `tenggat` tanggal), dan scope `aktif()` pada `Mahasiswa` dan `Tugas`.
 
 ## Tugas 5: Middleware, Autentikasi, dan Otorisasi
 

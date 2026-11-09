@@ -30,6 +30,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => User::ROLE_MAHASISWA,
         ];
     }
 
@@ -41,5 +42,17 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /** State untuk akun dosen. */
+    public function dosen(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => User::ROLE_DOSEN]);
+    }
+
+    /** State untuk akun asisten dosen. */
+    public function asdos(): static
+    {
+        return $this->state(fn (array $attributes) => ['role' => User::ROLE_ASDOS]);
     }
 }

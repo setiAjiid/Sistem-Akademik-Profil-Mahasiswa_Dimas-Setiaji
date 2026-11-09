@@ -2,7 +2,8 @@
 
 Tugas Mandiri PBKK, dikerjakan bertahap di repo yang sama:
 
-- **Pertemuan 9 (terbaru):** Upload foto mahasiswa dan API JSON dengan API Resource.
+- **Pertemuan 10 (terbaru):** Dashboard admin AdminLTE, role dan permission Spatie, widget statistik, serta pencarian dan filter dengan `when()`.
+- **Pertemuan 9:** Upload foto mahasiswa dan API JSON dengan API Resource.
 - **Pertemuan 8:** Relasi Eloquent, eager loading, dan seeder Faker.
 - **Pertemuan 7:** CRUD Mahasiswa dan Dosen dengan validasi Form Request.
 - **Pertemuan 6:** Migrations dan Eloquent ORM. Skema departemen, dosen, mahasiswa, tugas.
@@ -27,7 +28,8 @@ pnpm install            # atau npm install
 cp .env.example .env
 php artisan key:generate
 touch database/database.sqlite   # file database SQLite (Windows: type nul > database\database.sqlite)
-php artisan migrate --seed       # buat tabel dan isi akun uji coba
+php artisan migrate --seed       # buat tabel, role, akun uji coba, dan data dummy Faker
+php artisan storage:link         # agar foto mahasiswa bisa dibuka dari browser
 ```
 
 Lalu jalankan dua terminal:
@@ -43,13 +45,45 @@ Buka <http://localhost:8000>. Tanpa `pnpm dev`, jalankan `pnpm build` sekali aga
 
 Dibuat oleh `php artisan db:seed`. Semua memakai password `password`.
 
-| Role | Email |
-|---|---|
-| Dosen | `dosen@example.com` |
-| Asdos | `asdos@example.com` |
-| Mahasiswa | `mahasiswa@example.com` |
+| Role di portal (kolom `users.role`) | Role Spatie di panel admin | Email |
+|---|---|---|
+| Dosen | `admin` (akses penuh) | `dosen@example.com` |
+| Asdos | `staf` (tanpa hak hapus) | `asdos@example.com` |
+| Mahasiswa | tidak ada | `mahasiswa@example.com` |
 
 Saat `APP_ENV=local`, halaman login punya tombol **Akun uji coba** untuk masuk tanpa mengetik password (`/login/as/dosen`, `/login/as/asdos`, `/login/as/mahasiswa`). Di environment lain rute itu menjawab 404.
+
+## Tugas 10: Dashboard Admin dan RBAC
+
+Panel admin ada di `/admin/dashboard`. Login sebagai `dosen@example.com` (admin) atau `asdos@example.com` (staf), atau pakai tombol **Akun uji coba** di halaman login saat `APP_ENV=local`. Admin dan staf otomatis diarahkan ke panel admin, user lain ke `/portal`.
+
+Pemenuhan spesifikasi:
+
+| Syarat | Cara memenuhinya |
+|---|---|
+| UI backoffice | AdminLTE (`jeroennoten/laravel-adminlte`). Semua halaman panel memakai `@extends('adminlte::page')`. Aset dilayani lokal dari `public/vendor`, tanpa CDN. |
+| Autentikasi | Laravel Breeze. Seluruh rute panel dibungkus `auth`. |
+| Otorisasi database | `spatie/laravel-permission`. Role `admin` dan `staf` serta 9 permission disimpan di tabel Spatie, dibuat oleh `RoleAndPermissionSeeder`. |
+| Widget agregat | 4 widget di dashboard: Total Mahasiswa, Mahasiswa Aktif, Total Dosen, Tugas Aktif (`count()` dari model). |
+| Pengaman controller | Tiap controller memakai `HasMiddleware` dengan `permission:...` per aksi, jadi request manual tanpa izin ditolak 403. |
+| Hak eksklusif | Tombol Hapus hanya dirender untuk yang punya `hapus-*` (`@can`) dan aksi `destroy` dikunci `permission:hapus-*`. Staf tidak punya izin itu. |
+
+Permission per role:
+
+| Permission | admin | staf |
+|---|:---:|:---:|
+| `lihat-dashboard`, `lihat-mahasiswa`, `lihat-dosen` | ya | ya |
+| `tambah-*`, `edit-*` (mahasiswa dan dosen) | ya | ya |
+| `hapus-mahasiswa`, `hapus-dosen` | ya | tidak |
+
+Challenge yang dikerjakan:
+
+- **Pencarian `when()`**: daftar mahasiswa bisa dicari lewat nama atau NRP, difilter departemen, dan difilter status aktif atau cuti. Daftar dosen bisa dicari lewat nama atau NIP dan difilter departemen. Klausa hanya ditambahkan kalau filternya diisi, dan pencarian nama/NRP dikelompokkan dalam closure supaya `orWhere` tidak merusak filter lain.
+- **`withQueryString()`**: pindah halaman pagination tidak menghilangkan filter.
+- **Seeder Faker**: `php artisan db:seed` mengisi puluhan data dummy (24 dosen, 60 mahasiswa, 25 tugas).
+- **Auto-login**: tombol akun uji coba di halaman login (hanya aktif di `APP_ENV=local`).
+
+Dua sistem role berjalan berdampingan dan sengaja dipisah. Kolom `users.role` (Tugas 5) menentukan area proposal mahasiswa dan penilaian, sedangkan role Spatie (Tugas 10) menentukan akses panel admin.
 
 ## Tugas 9: Upload File dan API JSON
 

@@ -2,7 +2,8 @@
 
 Tugas Mandiri PBKK, dikerjakan bertahap di repo yang sama:
 
-- **Pertemuan 8 (terbaru):** Relasi Eloquent, eager loading, dan seeder Faker.
+- **Pertemuan 9 (terbaru):** Upload foto mahasiswa dan API JSON dengan API Resource.
+- **Pertemuan 8:** Relasi Eloquent, eager loading, dan seeder Faker.
 - **Pertemuan 7:** CRUD Mahasiswa dan Dosen dengan validasi Form Request.
 - **Pertemuan 6:** Migrations dan Eloquent ORM. Skema departemen, dosen, mahasiswa, tugas.
 - **Pertemuan 5:** Middleware, Autentikasi, dan Otorisasi. Login Breeze, role, middleware `cek.peran`, Gate, dan Policy. Tag [`tugas-5`](https://github.com/setiAjiid/Sistem-Akademik-Profil-Mahasiswa_Dimas-Setiaji/tree/tugas-5).
@@ -49,6 +50,24 @@ Dibuat oleh `php artisan db:seed`. Semua memakai password `password`.
 | Mahasiswa | `mahasiswa@example.com` |
 
 Saat `APP_ENV=local`, halaman login punya tombol **Akun uji coba** untuk masuk tanpa mengetik password (`/login/as/dosen`, `/login/as/asdos`, `/login/as/mahasiswa`). Di environment lain rute itu menjawab 404.
+
+## Tugas 9: Upload File dan API JSON
+
+**Upload foto mahasiswa** (form tambah dan ubah di `/admin/mahasiswa`):
+
+- Kolom baru `foto` berisi path file di disk `public`. File disimpan di `storage/app/public/foto-mahasiswa`.
+- Validasi: harus gambar JPG atau PNG, maksimal 2 MB.
+- Saat foto diganti atau mahasiswa dihapus, file lama ikut dihapus. Mengubah data tanpa memilih foto baru tidak menghapus foto lama.
+- Jalankan `php artisan storage:link` sekali supaya foto bisa dibuka dari browser.
+
+**API JSON read-only** (publik, dibatasi 30 permintaan per menit):
+
+| Endpoint | Keterangan |
+|---|---|
+| `GET /api/mahasiswa` | Daftar terpaginasi. Parameter opsional `departemen_id` dan `per_page` (maksimal 50) |
+| `GET /api/mahasiswa/{id}` | Detail satu mahasiswa, 404 kalau tidak ada |
+
+Bentuk JSON diatur `MahasiswaResource`, jadi kolom internal seperti `created_at` dan `departemen_id` tidak ikut keluar. Departemen hanya ikut tampil kalau sudah di-eager load (`whenLoaded`).
 
 ## Tugas 8: Relasi Eloquent dan Seeder
 

@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['nrp', 'nama', 'departemen_id', 'angkatan', 'ipk', 'is_active'])]
+#[Fillable(['nrp', 'nama', 'departemen_id', 'angkatan', 'ipk', 'foto', 'is_active'])]
 class Mahasiswa extends Model
 {
     /** @use HasFactory<MahasiswaFactory> */
@@ -31,6 +32,12 @@ class Mahasiswa extends Model
     public function departemen(): BelongsTo
     {
         return $this->belongsTo(Departemen::class);
+    }
+
+    /** URL publik foto, atau null kalau belum ada foto. */
+    public function urlFoto(): ?string
+    {
+        return $this->foto ? Storage::disk('public')->url($this->foto) : null;
     }
 
     /** Hanya mahasiswa yang tidak sedang cuti akademik. */

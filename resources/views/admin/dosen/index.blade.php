@@ -1,56 +1,88 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Data Dosen</h2>
-            <a href="{{ route('admin.dosen.create') }}"
-               class="inline-flex items-center px-4 py-2 bg-gray-800 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                Tambah Dosen
+@extends('adminlte::page')
+
+@section('title', 'Data Dosen')
+
+@section('content_header')
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Data Dosen</h1>
+        @can('tambah-dosen')
+            <a href="{{ route('admin.dosen.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Tambah Dosen
             </a>
+        @endcan
+    </div>
+@stop
+
+@section('content')
+    @if (session('status'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('status') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
         </div>
-    </x-slot>
+    @endif
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
-            @if (session('status'))
-                <x-status-banner tipe="success" bisa-ditutup>{{ session('status') }}</x-status-banner>
-            @endif
+    <div class="card">
+        <div class="card-header">
+            <form method="GET" action="{{ route('admin.dosen.index') }}" class="row g-2">
+                <div class="col-md-5">
+                    <input type="search" name="search" value="{{ $search }}" class="form-control" placeholder="Cari nama atau NIP">
+                </div>
+                <div class="col-md-4">
+                    <select name="departemen_id" class="form-select">
+                        <option value="">Semua departemen</option>
+                        @foreach ($departemens as $departemen)
+                            <option value="{{ $departemen->id }}" @selected(request('departemen_id') == $departemen->id)>{{ $departemen->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button class="btn btn-secondary"><i class="bi bi-search"></i> Cari</button>
+                    <a href="{{ route('admin.dosen.index') }}" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
 
-            <div class="bg-white shadow-sm sm:rounded-lg overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50 text-left text-gray-600">
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>NIP</th>
+                        <th>Nama</th>
+                        <th>Departemen</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($dosens as $dosen)
                         <tr>
-                            <th class="px-6 py-3 font-semibold">NIP</th>
-                            <th class="px-6 py-3 font-semibold">Nama</th>
-                            <th class="px-6 py-3 font-semibold">Departemen</th>
-                            <th class="px-6 py-3 font-semibold">Email</th>
-                            <th class="px-6 py-3"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @forelse ($dosens as $dosen)
-                            <tr>
-                                <td class="px-6 py-3 font-mono">{{ $dosen->nip }}</td>
-                                <td class="px-6 py-3 font-medium text-gray-900">{{ $dosen->nama }}</td>
-                                <td class="px-6 py-3">{{ $dosen->departemen->nama }}</td>
-                                <td class="px-6 py-3 text-gray-600">{{ $dosen->email ?? '-' }}</td>
-                                <td class="px-6 py-3 text-right whitespace-nowrap">
-                                    <a href="{{ route('admin.dosen.edit', $dosen) }}" class="font-semibold text-indigo-600 hover:underline">Ubah</a>
-                                    <form method="POST" action="{{ route('admin.dosen.destroy', $dosen) }}" class="inline"
+                            <td class="font-monospace">{{ $dosen->nip }}</td>
+                            <td>{{ $dosen->nama }}</td>
+                            <td>{{ $dosen->departemen->nama }}</td>
+                            <td class="text-muted">{{ $dosen->email ?? '-' }}</td>
+                            <td class="text-end text-nowrap">
+                                @can('edit-dosen')
+                                    <a href="{{ route('admin.dosen.edit', $dosen) }}" class="btn btn-sm btn-outline-primary">Ubah</a>
+                                @endcan
+                                @can('hapus-dosen')
+                                    <form method="POST" action="{{ route('admin.dosen.destroy', $dosen) }}" class="d-inline"
                                           onsubmit="return confirm('Hapus data {{ $dosen->nama }}?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="ms-3 font-semibold text-red-600 hover:underline">Hapus</button>
+                                        <button class="btn btn-sm btn-outline-danger">Hapus</button>
                                     </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="5" class="px-6 py-6 text-gray-500">Belum ada data dosen.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            {{ $dosens->links() }}
+                                @endcan
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="5" class="text-muted p-4">Tidak ada data yang cocok.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
+
+        @if ($dosens->hasPages())
+            <div class="card-footer">{{ $dosens->links('pagination::bootstrap-5') }}</div>
+        @endif
     </div>
-</x-app-layout>
+@stop

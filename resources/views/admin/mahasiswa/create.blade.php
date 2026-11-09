@@ -1,18 +1,19 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Tambah Mahasiswa</h2>
-    </x-slot>
+@extends('adminlte::page')
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <form method="POST" action="{{ route('admin.mahasiswa.store') }}" enctype="multipart/form-data" class="bg-white p-6 shadow-sm sm:rounded-lg">
-                @include('admin.mahasiswa._form')
+@section('title', 'Tambah Mahasiswa')
 
-                <div class="mt-6 flex items-center gap-4">
-                    <x-primary-button>Simpan</x-primary-button>
-                    <a href="{{ route('admin.mahasiswa.index') }}" class="text-sm text-gray-600 hover:underline">Batal</a>
-                </div>
-            </form>
+@section('content_header')
+    <h1>Tambah Mahasiswa</h1>
+@stop
+
+@section('content')
+    <form method="POST" action="{{ route('admin.mahasiswa.store') }}" enctype="multipart/form-data" class="card">
+        <div class="card-body">
+            @include('admin.mahasiswa._form')
         </div>
-    </div>
-</x-app-layout>
+        <div class="card-footer d-flex gap-2">
+            <button class="btn btn-primary">Simpan</button>
+            <a href="{{ route('admin.mahasiswa.index') }}" class="btn btn-outline-secondary">Batal</a>
+        </div>
+    </form>
+@stop

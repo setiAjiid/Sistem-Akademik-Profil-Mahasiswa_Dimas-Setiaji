@@ -1,19 +1,20 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ubah Dosen</h2>
-    </x-slot>
+@extends('adminlte::page')
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <form method="POST" action="{{ route('admin.dosen.update', $dosen) }}" class="bg-white p-6 shadow-sm sm:rounded-lg">
-                @method('PUT')
-                @include('admin.dosen._form')
+@section('title', 'Ubah Dosen')
 
-                <div class="mt-6 flex items-center gap-4">
-                    <x-primary-button>Simpan Perubahan</x-primary-button>
-                    <a href="{{ route('admin.dosen.index') }}" class="text-sm text-gray-600 hover:underline">Batal</a>
-                </div>
-            </form>
+@section('content_header')
+    <h1>Ubah Dosen</h1>
+@stop
+
+@section('content')
+    <form method="POST" action="{{ route('admin.dosen.update', $dosen) }}" class="card">
+        @method('PUT')
+        <div class="card-body">
+            @include('admin.dosen._form')
         </div>
-    </div>
-</x-app-layout>
+        <div class="card-footer d-flex gap-2">
+            <button class="btn btn-primary">Simpan Perubahan</button>
+            <a href="{{ route('admin.dosen.index') }}" class="btn btn-outline-secondary">Batal</a>
+        </div>
+    </form>
+@stop

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DepartemenController;
 use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\ProposalController as AdminProposalController;
@@ -112,6 +113,7 @@ Route::middleware(['auth', 'cek.peran:dosen,asdos'])
         Route::put('/proposal/{proposal}/nilai', [AdminProposalController::class, 'nilai'])->name('proposal.nilai');
 
         // Tugas 7: CRUD data master. Route::resource membuat index, create, store, edit, update, dan destroy sekaligus.
+        Route::get('/departemen', [DepartemenController::class, 'index'])->name('departemen.index');
         Route::resource('mahasiswa', MahasiswaController::class)->except('show');
         Route::resource('dosen', DosenController::class)->except('show');
     });

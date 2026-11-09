@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(DepartemenSeeder::class);
+
         $dosen = User::factory()->dosen()->create([
             'name' => 'Dosen Uji Coba',
             'email' => 'dosen@example.com',

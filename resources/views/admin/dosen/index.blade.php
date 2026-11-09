@@ -21,6 +21,7 @@
                         <tr>
                             <th class="px-6 py-3 font-semibold">NIP</th>
                             <th class="px-6 py-3 font-semibold">Nama</th>
+                            <th class="px-6 py-3 font-semibold">Departemen</th>
                             <th class="px-6 py-3 font-semibold">Email</th>
                             <th class="px-6 py-3"></th>
                         </tr>
@@ -30,6 +31,7 @@
                             <tr>
                                 <td class="px-6 py-3 font-mono">{{ $dosen->nip }}</td>
                                 <td class="px-6 py-3 font-medium text-gray-900">{{ $dosen->nama }}</td>
+                                <td class="px-6 py-3">{{ $dosen->departemen->nama }}</td>
                                 <td class="px-6 py-3 text-gray-600">{{ $dosen->email ?? '-' }}</td>
                                 <td class="px-6 py-3 text-right whitespace-nowrap">
                                     <a href="{{ route('admin.dosen.edit', $dosen) }}" class="font-semibold text-indigo-600 hover:underline">Ubah</a>
@@ -42,7 +44,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" class="px-6 py-6 text-gray-500">Belum ada data dosen.</td></tr>
+                            <tr><td colspan="5" class="px-6 py-6 text-gray-500">Belum ada data dosen.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

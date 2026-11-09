@@ -17,7 +17,7 @@ class DosenController extends Controller
     public function index(): View
     {
         return view('admin.dosen.index', [
-            'dosens' => Dosen::orderBy('nama')->paginate(10),
+            'dosens' => Dosen::with('departemen')->orderBy('nama')->paginate(10),
         ]);
     }
 

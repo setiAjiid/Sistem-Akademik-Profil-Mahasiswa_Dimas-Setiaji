@@ -17,7 +17,8 @@ class MahasiswaController extends Controller
     public function index(): View
     {
         return view('admin.mahasiswa.index', [
-            'mahasiswas' => Mahasiswa::orderBy('nama')->paginate(10),
+            // with('departemen') memuat semua departemen dalam 1 query tambahan (mencegah N+1).
+            'mahasiswas' => Mahasiswa::with('departemen')->orderBy('nama')->paginate(10),
         ]);
     }
 

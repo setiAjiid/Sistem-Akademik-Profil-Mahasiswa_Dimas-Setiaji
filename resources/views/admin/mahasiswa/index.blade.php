@@ -21,6 +21,7 @@
                         <tr>
                             <th class="px-6 py-3 font-semibold">NRP</th>
                             <th class="px-6 py-3 font-semibold">Nama</th>
+                            <th class="px-6 py-3 font-semibold">Departemen</th>
                             <th class="px-6 py-3 font-semibold">Angkatan</th>
                             <th class="px-6 py-3 font-semibold">IPK</th>
                             <th class="px-6 py-3 font-semibold">Status</th>
@@ -32,6 +33,7 @@
                             <tr>
                                 <td class="px-6 py-3 font-mono">{{ $mahasiswa->nrp }}</td>
                                 <td class="px-6 py-3 font-medium text-gray-900">{{ $mahasiswa->nama }}</td>
+                                <td class="px-6 py-3">{{ $mahasiswa->departemen->nama }}</td>
                                 <td class="px-6 py-3">{{ $mahasiswa->angkatan }}</td>
                                 <td class="px-6 py-3">{{ $mahasiswa->ipk ?? '-' }}</td>
                                 <td class="px-6 py-3">{{ $mahasiswa->is_active ? 'Aktif' : 'Cuti' }}</td>
@@ -46,7 +48,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="px-6 py-6 text-gray-500">Belum ada data mahasiswa.</td></tr>
+                            <tr><td colspan="7" class="px-6 py-6 text-gray-500">Belum ada data mahasiswa.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

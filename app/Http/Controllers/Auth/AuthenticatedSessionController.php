@@ -28,7 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Admin dan staf langsung masuk ke panel admin, user lain ke portal.
+        return redirect()->intended(route($request->user()->rutePascaLogin(), absolute: false));
     }
 
     /**

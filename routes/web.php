@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DepartemenController;
 use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\MahasiswaController;
@@ -111,9 +112,24 @@ Route::middleware(['auth', 'cek.peran:dosen,asdos'])
         Route::get('/proposal', [AdminProposalController::class, 'index'])->name('proposal.index');
         Route::get('/proposal/{proposal}', [AdminProposalController::class, 'show'])->name('proposal.show');
         Route::put('/proposal/{proposal}/nilai', [AdminProposalController::class, 'nilai'])->name('proposal.nilai');
+    });
 
-        // Tugas 7: CRUD data master. Route::resource membuat index, create, store, edit, update, dan destroy sekaligus.
+/*
+|--------------------------------------------------------------------------
+| Tugas 10 (Pertemuan 10): panel admin AdminLTE dengan role Spatie
+|--------------------------------------------------------------------------
+*/
+
+// Hanya user yang login dengan role Spatie "admin" atau "staf" yang bisa masuk.
+// Permission yang lebih rinci (misalnya hapus-mahasiswa) dijaga lagi di constructor middleware tiap controller.
+Route::middleware(['auth', 'role:admin|staf'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/departemen', [DepartemenController::class, 'index'])->name('departemen.index');
+
+        // Route::resource membuat index, create, store, edit, update, dan destroy sekaligus.
         Route::resource('mahasiswa', MahasiswaController::class)->except('show');
         Route::resource('dosen', DosenController::class)->except('show');
     });

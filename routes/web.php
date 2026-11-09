@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,26 @@ Route::prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/riwayat-studi', [ProfilController::class, 'riwayatStudi'])
         ->name('riwayat');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Tugas 5 (Pertemuan 5): autentikasi Breeze
+|--------------------------------------------------------------------------
+*/
+
+// Halaman setelah login. Nama rutenya "dashboard" karena dipakai bawaan Breeze untuk redirect.
+Route::view('/portal', 'dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Rute login, register, logout, dan reset password dari Breeze.
+require __DIR__.'/auth.php';
 
 // Challenge 3: Fallback untuk URL yang tidak cocok dengan rute mana pun. Harus diletakkan paling akhir.
 Route::fallback([ProfilController::class, 'tidakDitemukan'])

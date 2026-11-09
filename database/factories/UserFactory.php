@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -48,6 +49,24 @@ class UserFactory extends Factory
     public function dosen(): static
     {
         return $this->state(fn (array $attributes) => ['role' => User::ROLE_DOSEN]);
+    }
+
+    /** Memberi role Spatie "admin" (akses penuh panel admin). Role dibuat dulu kalau belum ada. */
+    public function admin(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            (new RoleAndPermissionSeeder)->run();
+            $user->assignRole(User::PANEL_ADMIN);
+        });
+    }
+
+    /** Memberi role Spatie "staf" (panel admin tanpa hak hapus). */
+    public function staf(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            (new RoleAndPermissionSeeder)->run();
+            $user->assignRole(User::PANEL_STAF);
+        });
     }
 
     /** State untuk akun asisten dosen. */

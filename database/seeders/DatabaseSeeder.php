@@ -15,19 +15,22 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            RoleAndPermissionSeeder::class,
             DepartemenSeeder::class,
             DataAkademikSeeder::class,
         ]);
 
+        // Dosen memegang role Spatie "admin" (akses penuh), asdos memegang "staf" (tanpa hak hapus).
         $dosen = User::factory()->dosen()->create([
             'name' => 'Dosen Uji Coba',
             'email' => 'dosen@example.com',
         ]);
+        $dosen->assignRole(User::PANEL_ADMIN);
 
         User::factory()->asdos()->create([
             'name' => 'Asdos Uji Coba',
             'email' => 'asdos@example.com',
-        ]);
+        ])->assignRole(User::PANEL_STAF);
 
         $mahasiswa = User::factory()->create([
             'name' => 'Mahasiswa Uji Coba',
